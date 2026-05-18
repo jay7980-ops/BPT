@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>부산항 인텔리전스 허브</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #F4F6F9;
+  --bg2:      #FFFFFF;
+  --bg3:      #EEF1F5;
+  --border:   #D8DEE8;
+  --text:     #1A2233;
+  --text2:    #4A5568;
+  --text3:    #8A97AA;
+  --blue:     #1251A3;
+  --blue-lt:  #2E6FD9;
+  --blue-bg:  rgba(18,81,163,.07);
+  --green:    #1A7F37;
+  --green-bg: rgba(26,127,55,.07);
+  --yellow:   #9A6700;
+  --red:      #C21F28;
+  --accent:   #E8F0FE;
+  --shadow:   0 2px 12px rgba(18,81,163,.10);
+  --shadow-lg:0 8px 32px rgba(18,81,163,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:14px;min-height:100vh;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+
+/* ── Header ── */
+.topbar {
+  background: var(--blue);
+  color:#fff;
+  padding: 0 40px;
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(18,81,163,.3);
+  position: sticky; top: 0; z-index: 200;
+}
+.topbar-logo { display:flex; align-items:center; gap:12px; }
+.logo-mark {
+  width:32px; height:32px; border-radius:8px;
+  background: rgba(255,255,255,.18);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:14px;
+  border: 1px solid rgba(255,255,255,.25);
+}
+.topbar-title { font-size:16px; font-weight:700; letter-spacing:-.01em; }
+.topbar-sub { font-size:11px; opacity:.7; margin-top:1px; font-family:'IBM Plex Mono',monospace; }
+.topbar-meta { font-size:11px; opacity:.6; font-family:'IBM Plex Mono',monospace; }
+
+/* ── Layout ── */
+.layout { display:flex; min-height:calc(100vh - 56px); }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 240px; flex-shrink:0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  padding: 20px 0;
+  position: sticky; top:56px; height:calc(100vh - 56px);
+  overflow-y:auto;
+}
+.sidebar-section { padding: 0 16px; margin-bottom: 6px; }
+.sidebar-label {
+  font-size: 10px; font-weight: 700; color: var(--text3);
+  text-transform:uppercase; letter-spacing:.08em;
+  padding: 8px 8px 5px;
+}
+.nav-item {
+  display:flex; align-items:center; gap:10px;
+  padding: 9px 12px; border-radius: 6px;
+  cursor:pointer; font-size:13px; font-weight:500;
+  color: var(--text2); transition: all .15s;
+  margin-bottom:2px; border: 1px solid transparent;
+}
+.nav-item:hover { background:var(--blue-bg); color:var(--blue); }
+.nav-item.active { background:var(--blue-bg); color:var(--blue); border-color:rgba(18,81,163,.15); font-weight:600; }
+.nav-item .nav-icon { width:18px; height:18px; flex-shrink:0; opacity:.7; }
+.nav-item.active .nav-icon { opacity:1; }
+.nav-badge {
+  margin-left:auto; font-size:10px; padding:1px 6px;
+  border-radius:10px; background:var(--blue-bg); color:var(--blue);
+  font-family:'IBM Plex Mono',monospace; font-weight:600;
+}
+.sidebar-divider { border:none; border-top:1px solid var(--border); margin:10px 16px; }
+
+/* ── Main ── */
+.main { flex:1; padding:32px 36px; overflow-y:auto; }
+.page { display:none; }
+.page.active { display:block; }
+
+/* ── Hero card ── */
+.hero {
+  background: linear-gradient(135deg, var(--blue) 0%, #1A3D8A 100%);
+  border-radius:12px; padding:28px 32px;
+  color:#fff; margin-bottom:28px;
+  position:relative; overflow:hidden;
+}
+.hero::before {
+  content:'';
+  position:absolute; top:-40px; right:-40px;
+  width:200px; height:200px;
+  border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+.hero::after {
+  content:'';
+  position:absolute; bottom:-60px; right:80px;
+  width:150px; height:150px;
+  border-radius:50%;
+  background:rgba(255,255,255,.04);
+}
+.hero-title { font-size:22px; font-weight:700; margin-bottom:6px; }
+.hero-sub { font-size:13px; opacity:.8; margin-bottom:20px; }
+.hero-stats { display:flex; gap:24px; }
+.hero-stat { }
+.hero-stat-val { font-size:24px; font-weight:700; font-family:'IBM Plex Mono',monospace; }
+.hero-stat-lbl { font-size:11px; opacity:.7; margin-top:2px; }
+
+/* ── Dashboard cards ── */
+.card-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:28px; }
+.dash-card {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:10px; padding:20px;
+  cursor:pointer; transition:all .2s;
+  text-decoration:none; color:inherit;
+  display:block; position:relative; overflow:hidden;
+}
+.dash-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:var(--blue); transform:scaleX(0); transform-origin:left;
+  transition:transform .2s;
+}
+.dash-card:hover { border-color:var(--blue-lt); box-shadow:var(--shadow); transform:translateY(-2px); }
+.dash-card:hover::before { transform:scaleX(1); }
+.dash-card.green-bar::before { background:var(--green); }
+.dash-card.yellow-bar::before { background:var(--yellow); }
+.dash-card-icon {
+  width:40px; height:40px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; margin-bottom:12px;
+  background:var(--blue-bg);
+}
+.dash-card.green-bar .dash-card-icon { background:var(--green-bg); }
+.dash-card.yellow-bar .dash-card-icon { background:rgba(154,103,0,.07); }
+.dash-card-title { font-size:14px; font-weight:700; margin-bottom:4px; }
+.dash-card-desc { font-size:12px; color:var(--text2); line-height:1.5; margin-bottom:12px; }
+.dash-card-meta { display:flex; align-items:center; gap:8px; }
+.tag-sm {
+  font-size:10px; padding:2px 7px; border-radius:4px;
+  background:var(--blue-bg); color:var(--blue); font-weight:500;
+}
+.tag-sm.green { background:var(--green-bg); color:var(--green); }
+.tag-sm.yellow { background:rgba(154,103,0,.08); color:var(--yellow); }
+.dash-card-date { font-size:10px; color:var(--text3); font-family:'IBM Plex Mono',monospace; margin-left:auto; }
+.open-btn {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:6px 14px; border-radius:6px; font-size:12px; font-weight:500;
+  background:var(--blue); color:#fff; border:none; cursor:pointer;
+  transition:all .15s; text-decoration:none;
+}
+.open-btn:hover { background:var(--blue-lt); }
+.open-btn.outline {
+  background:transparent; color:var(--blue); border:1px solid var(--blue);
+}
+.open-btn.outline:hover { background:var(--blue-bg); }
+
+/* ── Section header ── */
+.sec-hd {
+  font-size:11px; font-weight:700; color:var(--text3);
+  text-transform:uppercase; letter-spacing:.07em;
+  margin-bottom:14px; display:flex; align-items:center; gap:8px;
+}
+.sec-hd::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ── Update section ── */
+.update-area {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:10px; padding:24px; margin-bottom:20px;
+}
+.update-title { font-size:15px; font-weight:700; margin-bottom:4px; }
+.update-sub { font-size:12px; color:var(--text2); margin-bottom:20px; }
+.update-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.upload-box {
+  border: 2px dashed var(--border); border-radius:8px;
+  padding:20px; text-align:center;
+  transition:all .2s; cursor:pointer; position:relative;
+}
+.upload-box:hover, .upload-box.drag-over {
+  border-color:var(--blue-lt); background:var(--blue-bg);
+}
+.upload-box input[type=file] {
+  position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%;
+}
+.upload-icon { font-size:28px; margin-bottom:8px; }
+.upload-title { font-size:13px; font-weight:600; margin-bottom:4px; }
+.upload-desc { font-size:11px; color:var(--text3); }
+.upload-tag { font-size:10px; margin-top:8px; padding:2px 8px; border-radius:10px; display:inline-block; background:var(--bg3); color:var(--text2); }
+
+/* Update log */
+.log-list { list-style:none; }
+.log-item {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:10px 0; border-bottom:1px solid var(--border);
+  font-size:12px;
+}
+.log-item:last-child { border-bottom:none; }
+.log-dot {
+  width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:3px;
+  background:var(--blue);
+}
+.log-dot.green { background:var(--green); }
+.log-dot.yellow { background:var(--yellow); }
+.log-date { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--text3); white-space:nowrap; }
+.log-desc { color:var(--text2); flex:1; }
+.log-type { font-size:10px; padding:1px 6px; border-radius:3px; background:var(--bg3); color:var(--text3); flex-shrink:0; }
+
+/* ── iframe viewer ── */
+.iframe-wrap {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:10px; overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.iframe-bar {
+  padding:10px 16px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:10px;
+  background:var(--bg3);
+}
+.iframe-bar-title { font-size:13px; font-weight:600; flex:1; }
+.iframe-bar-btns { display:flex; gap:6px; }
+iframe {
+  width:100%; border:none; display:block;
+  height:calc(100vh - 160px);
+}
+
+/* ── Status badges ── */
+.status {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:11px; padding:2px 8px; border-radius:10px; font-weight:500;
+}
+.status.live { background:var(--green-bg); color:var(--green); }
+.status.live::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--green); display:inline-block; }
+.status.draft { background:rgba(154,103,0,.08); color:var(--yellow); }
+.status.draft::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--yellow); display:inline-block; }
+
+/* ── Toast ── */
+.toast {
+  position:fixed; bottom:24px; right:24px; z-index:999;
+  background:var(--text); color:#fff;
+  padding:12px 18px; border-radius:8px;
+  font-size:13px; box-shadow:var(--shadow-lg);
+  transform:translateY(80px); opacity:0;
+  transition:all .3s; pointer-events:none;
+}
+.toast.show { transform:translateY(0); opacity:1; }
+
+/* ── Footer ── */
+.footer { text-align:center; color:var(--text3); font-size:11px; padding:24px; font-family:'IBM Plex Mono',monospace; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <div class="logo-mark">BP</div>
+    <div>
+      <div class="topbar-title">부산항 인텔리전스 허브</div>
+      <div class="topbar-sub">Busan Port Intelligence Hub</div>
+    </div>
+  </div>
+  <div class="topbar-meta" id="top-date"></div>
+</div>
+
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">대시보드</div>
+      <div class="nav-item active" onclick="showPage('home')">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+        홈
+      </div>
+    </div>
+
+    <hr class="sidebar-divider">
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">분석 리포트</div>
+      <div class="nav-item" onclick="showPage('bpt-report')">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>
+        BPT 기항실적 분석
+        <span class="nav-badge">26'</span>
+      </div>
+      <div class="nav-item" onclick="showPage('port-dashboard')">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"/></svg>
+        부산항 물동량 대시보드
+        <span class="nav-badge">25'</span>
+      </div>
+    </div>
+
+    <hr class="sidebar-divider">
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">선대 현황</div>
+      <div class="nav-item" onclick="showPage('fleet')">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/><path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7h3l3 4v3h-2.05a2.5 2.5 0 01-4.9 0H14V7z"/></svg>
+        터미널별 선대현황
+      </div>
+    </div>
+
+    <hr class="sidebar-divider">
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">데이터 관리</div>
+      <div class="nav-item" onclick="showPage('update')">
+        <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+        자료 업데이트
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main Content ── -->
+  <main class="main">
+
+    <!-- ══ 홈 페이지 ══ -->
+    <div class="page active" id="page-home">
+
+      <div class="hero">
+        <div class="hero-title">⚓ 부산항 인텔리전스 허브</div>
+        <div class="hero-sub">터미널 기항실적 · 물동량 현황 · 선대 분석을 한 곳에서</div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-val mono">3</div>
+            <div class="hero-stat-lbl">활성 대시보드</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-val mono">10</div>
+            <div class="hero-stat-lbl">터미널 커버</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-val mono">89</div>
+            <div class="hero-stat-lbl">BPT 항로</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-val mono">25'~26'</div>
+            <div class="hero-stat-lbl">데이터 기간</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec-hd">분석 리포트</div>
+      <div class="card-grid">
+
+        <div class="dash-card" onclick="showPage('bpt-report')">
+          <div class="dash-card-icon">📊</div>
+          <div class="dash-card-title">BPT 기항실적 분석</div>
+          <div class="dash-card-desc">2026년 1~4월 월별 접안척수·TEU·척당물량 분석. 89개 항로 전체 커버.</div>
+          <div class="dash-card-meta">
+            <span class="tag-sm">기항실적</span>
+            <span class="tag-sm">월별분석</span>
+            <span class="status live">최신</span>
+            <span class="dash-card-date">2026.05</span>
+          </div>
+        </div>
+
+        <div class="dash-card green-bar" onclick="showPage('port-dashboard')">
+          <div class="dash-card-icon">🏗️</div>
+          <div class="dash-card-title">부산항 물동량 대시보드</div>
+          <div class="dash-card-desc">10개 터미널 · Top 30 선사 · 3개년 추이. 선대현황 포함.</div>
+          <div class="dash-card-meta">
+            <span class="tag-sm green">물동량</span>
+            <span class="tag-sm green">선사순위</span>
+            <span class="status live">최신</span>
+            <span class="dash-card-date">2025 YTD</span>
+          </div>
+        </div>
+
+        <div class="dash-card yellow-bar" onclick="showPage('fleet')">
+          <div class="dash-card-icon">🚢</div>
+          <div class="dash-card-title">터미널별 선대현황</div>
+          <div class="dash-card-desc">BPT 신선대·감만 등 10개 터미널 전 서비스 선대. NSL·DYS 포함.</div>
+          <div class="dash-card-meta">
+            <span class="tag-sm yellow">선대</span>
+            <span class="tag-sm yellow">서비스현황</span>
+            <span class="status draft">2025.10</span>
+            <span class="dash-card-date">202510</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="sec-hd">최근 업데이트</div>
+      <div class="update-area" style="padding:16px 20px;">
+        <ul class="log-list" id="update-log">
+          <li class="log-item">
+            <span class="log-dot green"></span>
+            <span class="log-date">2026.05.18</span>
+            <span class="log-desc">BPT 기항실적 분석 대시보드 — 1~4월 데이터 반영, 월별 변화 분석 추가</span>
+            <span class="log-type">기항실적</span>
+          </li>
+          <li class="log-item">
+            <span class="log-dot"></span>
+            <span class="log-date">2026.05.18</span>
+            <span class="log-desc">부산항 물동량 대시보드 — 터미널별 점유율 % 추가, 북항/신항 분류 수정</span>
+            <span class="log-type">물동량</span>
+          </li>
+          <li class="log-item">
+            <span class="log-dot yellow"></span>
+            <span class="log-date">2025.10.01</span>
+            <span class="log-desc">터미널별 선대현황 — 202510 기준 전 터미널 업데이트</span>
+            <span class="log-type">선대</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sec-hd">빠른 업데이트</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="open-btn outline" onclick="showPage('update')">
+          <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+          기항실적 엑셀 업로드
+        </button>
+        <button class="open-btn outline" onclick="showPage('update')">
+          <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+          물동량 파일 업로드
+        </button>
+        <button class="open-btn outline" onclick="showPage('update')">
+          <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+          선대현황 업로드
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ BPT 기항실적 ══ -->
+    <div class="page" id="page-bpt-report">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <h2 style="font-size:18px;font-weight:700;">BPT 기항실적 분석</h2>
+          <p style="font-size:12px;color:var(--text2);margin-top:3px;">2026년 1~4월 &nbsp;|&nbsp; 편집 시트 기준 &nbsp;|&nbsp; 89개 항로</p>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <span class="status live">최신</span>
+          <a class="open-btn" href="BPT_기항실적_분석_2026_1-4월.html" target="_blank">
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg>
+            새 탭에서 열기
+          </a>
+        </div>
+      </div>
+      <div class="iframe-wrap">
+        <div class="iframe-bar">
+          <span style="font-size:16px;">📊</span>
+          <span class="iframe-bar-title">BPT 기항실적 분석 대시보드 — 2026년 1~4월</span>
+          <div class="iframe-bar-btns">
+            <a class="open-btn outline" href="BPT_기항실적_분석_2026_1-4월.html" target="_blank" style="font-size:11px;padding:4px 10px;">↗ 전체화면</a>
+          </div>
+        </div>
+        <iframe src="BPT_기항실적_분석_2026_1-4월.html" id="iframe-bpt" loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <!-- ══ 부산항 물동량 대시보드 ══ -->
+    <div class="page" id="page-port-dashboard">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <h2 style="font-size:18px;font-weight:700;">부산항 컨테이너 터미널 대시보드</h2>
+          <p style="font-size:12px;color:var(--text2);margin-top:3px;">2025 YTD &nbsp;|&nbsp; 터미널별 물동량 · 선사 순위 · 3개년 추이</p>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <span class="status live">최신</span>
+          <a class="open-btn" href="busan_port_dashboard.html" target="_blank">
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg>
+            새 탭에서 열기
+          </a>
+        </div>
+      </div>
+      <div class="iframe-wrap">
+        <div class="iframe-bar">
+          <span style="font-size:16px;">🏗️</span>
+          <span class="iframe-bar-title">부산항 물동량 대시보드 — 2025 YTD</span>
+          <div class="iframe-bar-btns">
+            <a class="open-btn outline" href="busan_port_dashboard.html" target="_blank" style="font-size:11px;padding:4px 10px;">↗ 전체화면</a>
+          </div>
+        </div>
+        <iframe src="busan_port_dashboard.html" id="iframe-port" loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <!-- ══ 선대현황 ══ -->
+    <div class="page" id="page-fleet">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <h2 style="font-size:18px;font-weight:700;">터미널별 선대현황</h2>
+          <p style="font-size:12px;color:var(--text2);margin-top:3px;">2025년 10월 기준 &nbsp;|&nbsp; 10개 터미널 · 전 서비스 포함</p>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <span class="status draft">2025.10</span>
+          <a class="open-btn" href="busan_port_dashboard.html#fleet" target="_blank">
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg>
+            새 탭에서 열기
+          </a>
+        </div>
+      </div>
+      <div class="iframe-wrap">
+        <div class="iframe-bar">
+          <span style="font-size:16px;">🚢</span>
+          <span class="iframe-bar-title">터미널별 선대현황 — 부산항 물동량 대시보드 내</span>
+          <div class="iframe-bar-btns">
+            <a class="open-btn outline" href="busan_port_dashboard.html" target="_blank" style="font-size:11px;padding:4px 10px;">↗ 전체화면</a>
+          </div>
+        </div>
+        <iframe src="busan_port_dashboard.html" id="iframe-fleet" loading="lazy"></iframe>
+      </div>
+    </div>
+
+    <!-- ══ 자료 업데이트 ══ -->
+    <div class="page" id="page-update">
+      <h2 style="font-size:18px;font-weight:700;margin-bottom:4px;">자료 업데이트</h2>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:24px;">새 파일을 업로드하면 Claude에게 전달해 대시보드를 자동 재생성할 수 있습니다.</p>
+
+      <div class="sec-hd">업로드 가이드</div>
+
+      <div class="update-grid" style="margin-bottom:24px;">
+
+        <!-- BPT 기항실적 -->
+        <div class="update-area">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="font-size:20px;">📊</span>
+            <div class="update-title">BPT 기항실적 (매월)</div>
+          </div>
+          <div class="update-sub">엑셀 편집 시트 기준 (.xls / .xlsx)</div>
+          <div class="upload-box" id="box-bpt" ondragover="dragOver(event,'box-bpt')" ondragleave="dragLeave('box-bpt')" ondrop="dropFile(event,'box-bpt','bpt')">
+            <input type="file" accept=".xls,.xlsx" onchange="handleFile(event,'bpt')">
+            <div class="upload-icon">📁</div>
+            <div class="upload-title">파일을 드래그하거나 클릭하여 선택</div>
+            <div class="upload-desc">BPT선대현황.xls 형식 · 편집 시트 포함</div>
+            <div class="upload-tag">.xls / .xlsx</div>
+          </div>
+          <div id="status-bpt" style="margin-top:10px;font-size:12px;color:var(--text3);"></div>
+          <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+            <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px;">✅ 업로드 후 Claude에게 전달할 메시지</div>
+            <div style="background:var(--bg3);border-radius:6px;padding:10px 12px;font-size:11px;color:var(--text2);font-family:'IBM Plex Mono',monospace;line-height:1.6;border:1px solid var(--border);" id="msg-bpt">
+              업로드된 파일로 BPT 기항실적 대시보드를 업데이트해줘. 편집 시트 기준으로 월별 접안척수/TEU/척당물량 분석해줘.
+            </div>
+            <button class="open-btn outline" style="margin-top:8px;font-size:11px;" onclick="copyMsg('msg-bpt')">📋 메시지 복사</button>
+          </div>
+        </div>
+
+        <!-- 물동량 -->
+        <div class="update-area">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="font-size:20px;">🏗️</span>
+            <div class="update-title">부산항 물동량 (연간/분기)</div>
+          </div>
+          <div class="update-sub">터미널별 선사 물동량 (.xlsx)</div>
+          <div class="upload-box" id="box-vol" ondragover="dragOver(event,'box-vol')" ondragleave="dragLeave('box-vol')" ondrop="dropFile(event,'box-vol','vol')">
+            <input type="file" accept=".xlsx,.xls" onchange="handleFile(event,'vol')">
+            <div class="upload-icon">📁</div>
+            <div class="upload-title">파일을 드래그하거나 클릭하여 선택</div>
+            <div class="upload-desc">Busan_Port_Throughput 형식</div>
+            <div class="upload-tag">.xlsx</div>
+          </div>
+          <div id="status-vol" style="margin-top:10px;font-size:12px;color:var(--text3);"></div>
+          <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+            <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px;">✅ 업로드 후 Claude에게 전달할 메시지</div>
+            <div style="background:var(--bg3);border-radius:6px;padding:10px 12px;font-size:11px;color:var(--text2);font-family:'IBM Plex Mono',monospace;line-height:1.6;border:1px solid var(--border);" id="msg-vol">
+              업로드된 파일로 부산항 물동량 대시보드를 업데이트해줘. 터미널별 물동량과 선사 순위를 최신 데이터로 반영해줘.
+            </div>
+            <button class="open-btn outline" style="margin-top:8px;font-size:11px;" onclick="copyMsg('msg-vol')">📋 메시지 복사</button>
+          </div>
+        </div>
+
+        <!-- 선대현황 -->
+        <div class="update-area">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="font-size:20px;">🚢</span>
+            <div class="update-title">터미널별 선대현황 (월/분기)</div>
+          </div>
+          <div class="update-sub">취합 엑셀 파일 (.xlsx / .XLSX)</div>
+          <div class="upload-box" id="box-fleet" ondragover="dragOver(event,'box-fleet')" ondragleave="dragLeave('box-fleet')" ondrop="dropFile(event,'box-fleet','fleet')">
+            <input type="file" accept=".xlsx,.xls,.XLSX" onchange="handleFile(event,'fleet')">
+            <div class="upload-icon">📁</div>
+            <div class="upload-title">파일을 드래그하거나 클릭하여 선택</div>
+            <div class="upload-desc">부산항_터미널별_선대_상세_현황 형식</div>
+            <div class="upload-tag">.xlsx / .XLSX</div>
+          </div>
+          <div id="status-fleet" style="margin-top:10px;font-size:12px;color:var(--text3);"></div>
+          <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+            <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px;">✅ 업로드 후 Claude에게 전달할 메시지</div>
+            <div style="background:var(--bg3);border-radius:6px;padding:10px 12px;font-size:11px;color:var(--text2);font-family:'IBM Plex Mono',monospace;line-height:1.6;border:1px solid var(--border);" id="msg-fleet">
+              업로드된 파일로 터미널별 선대현황을 업데이트해줘. 변경된 서비스·선사·PORT ROTATION을 반영해줘.
+            </div>
+            <button class="open-btn outline" style="margin-top:8px;font-size:11px;" onclick="copyMsg('msg-fleet')">📋 메시지 복사</button>
+          </div>
+        </div>
+
+        <!-- 전년 비교 -->
+        <div class="update-area">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="font-size:20px;">📅</span>
+            <div class="update-title">전년 기항실적 (전년 대비용)</div>
+          </div>
+          <div class="update-sub">전년도 편집 시트 — 전년 대비 분석 활성화</div>
+          <div class="upload-box" id="box-yoy" ondragover="dragOver(event,'box-yoy')" ondragleave="dragLeave('box-yoy')" ondrop="dropFile(event,'box-yoy','yoy')">
+            <input type="file" accept=".xls,.xlsx" onchange="handleFile(event,'yoy')">
+            <div class="upload-icon">📁</div>
+            <div class="upload-title">파일을 드래그하거나 클릭하여 선택</div>
+            <div class="upload-desc">2025년 BPT선대현황.xls 형식</div>
+            <div class="upload-tag">.xls / .xlsx</div>
+          </div>
+          <div id="status-yoy" style="margin-top:10px;font-size:12px;color:var(--text3);"></div>
+          <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);">
+            <div style="font-size:11px;font-weight:600;color:var(--text2);margin-bottom:8px;">✅ 업로드 후 Claude에게 전달할 메시지</div>
+            <div style="background:var(--bg3);border-radius:6px;padding:10px 12px;font-size:11px;color:var(--text2);font-family:'IBM Plex Mono',monospace;line-height:1.6;border:1px solid var(--border);" id="msg-yoy">
+              업로드된 파일은 2025년 전년도 BPT 기항실적이야. 이걸 바탕으로 기항실적 대시보드의 전년 대비 분석을 활성화해줘.
+            </div>
+            <button class="open-btn outline" style="margin-top:8px;font-size:11px;" onclick="copyMsg('msg-yoy')">📋 메시지 복사</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="sec-hd">업데이트 절차 안내</div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px 24px;">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+          <div style="text-align:center;">
+            <div style="font-size:28px;margin-bottom:8px;">1️⃣</div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:4px;">파일 업로드</div>
+            <div style="font-size:11px;color:var(--text2);">위 업로드 박스에서 최신 엑셀 파일 선택</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:28px;margin-bottom:8px;">2️⃣</div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:4px;">메시지 복사</div>
+            <div style="font-size:11px;color:var(--text2);">"메시지 복사" 버튼으로 안내 문구 복사</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:28px;margin-bottom:8px;">3️⃣</div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:4px;">Claude에 전달</div>
+            <div style="font-size:11px;color:var(--text2);">파일 + 메시지를 Claude 채팅에 업로드·전송</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:28px;margin-bottom:8px;">4️⃣</div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:4px;">HTML 교체</div>
+            <div style="font-size:11px;color:var(--text2);">생성된 새 HTML로 기존 파일 교체</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="footer">Busan Port Intelligence Hub &nbsp;|&nbsp; Internal Use Only &nbsp;|&nbsp; v1.0</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── Date ── */
+const d = new Date();
+document.getElementById('top-date').textContent =
+  `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} 기준`;
+
+/* ── Page navigation ── */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const pg = document.getElementById('page-' + id);
+  if (pg) pg.classList.add('active');
+
+  // Sidebar active
+  const navMap = {
+    'home':'홈', 'bpt-report':'BPT 기항실적 분석',
+    'port-dashboard':'부산항 물동량 대시보드',
+    'fleet':'터미널별 선대현황', 'update':'자료 업데이트'
+  };
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.textContent.trim().startsWith(
+      (navMap[id]||'').substring(0,4))) n.classList.add('active');
+  });
+
+  window.scrollTo(0,0);
+}
+
+/* ── File upload handlers ── */
+function handleFile(e, type) {
+  const file = e.target.files[0];
+  if (!file) return;
+  updateStatus(type, file.name, file.size);
+}
+
+function dropFile(e, boxId, type) {
+  e.preventDefault();
+  dragLeave(boxId);
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  updateStatus(type, file.name, file.size);
+}
+
+function dragOver(e, boxId) {
+  e.preventDefault();
+  document.getElementById(boxId).classList.add('drag-over');
+}
+function dragLeave(boxId) {
+  document.getElementById(boxId).classList.remove('drag-over');
+}
+
+function updateStatus(type, name, size) {
+  const el = document.getElementById('status-' + type);
+  if (!el) return;
+  const kb = (size / 1024).toFixed(0);
+  el.innerHTML = `<span style="color:var(--green);font-weight:600;">✅ 선택됨:</span> ${name} <span style="color:var(--text3);">(${kb} KB)</span>`;
+
+  // update log
+  const log = document.getElementById('update-log');
+  const labels = { bpt:'기항실적', vol:'물동량', fleet:'선대', yoy:'전년비교' };
+  const li = document.createElement('li');
+  li.className = 'log-item';
+  const now = new Date();
+  const ds = `${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,'0')}.${String(now.getDate()).padStart(2,'0')}`;
+  li.innerHTML = `
+    <span class="log-dot green"></span>
+    <span class="log-date">${ds}</span>
+    <span class="log-desc">${name} 업로드 완료 — Claude에 전달 후 대시보드 재생성 필요</span>
+    <span class="log-type">${labels[type]||type}</span>`;
+  log.prepend(li);
+
+  showToast(`📁 ${name} 선택 완료! 메시지를 복사해 Claude에 전달하세요.`);
+}
+
+/* ── Copy message ── */
+function copyMsg(id) {
+  const text = document.getElementById(id).textContent.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('📋 메시지가 클립보드에 복사됐습니다!');
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('📋 메시지 복사 완료!');
+  });
+}
+
+/* ── Toast ── */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
