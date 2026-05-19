@@ -166,12 +166,12 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     <hr class="sidebar-divider">
     <div>
       <div class="sidebar-label">분석 리포트</div>
-      <div class="nav-item" onclick="go('bpt',this)">
+      <div class="nav-item" onclick="openDash('BPT_기항실적_분析_2026_1-4월.html')">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>
         BPT 기항실적 분석
         <span class="nav-badge">26'</span>
       </div>
-      <div class="nav-item" onclick="go('port',this)">
+      <div class="nav-item" onclick="openDash('busan_port_dashboard.html')">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"/></svg>
         부산항 컨테이너 물동량 현황
         <span class="nav-badge">25'</span>
@@ -180,7 +180,7 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
     <hr class="sidebar-divider">
     <div>
       <div class="sidebar-label">선대 현황</div>
-      <div class="nav-item" onclick="go('fleet',this)">
+      <div class="nav-item" onclick="openDash('busan_port_dashboard.html')">
         <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/><path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7h3l3 4v3h-2.05a2.5 2.5 0 01-4.9 0H14V7z"/></svg>
         터미널별 선대현황
       </div>
@@ -212,19 +212,19 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
 
       <div class="sec-hd">분석 리포트</div>
       <div class="card-grid">
-        <div class="dash-card" onclick="go('bpt',null)">
+        <div class="dash-card" onclick="openDash('BPT_기항실적_분析_2026_1-4월.html')">
           <div class="dash-card-icon">📊</div>
           <div class="dash-card-title">BPT 기항실적 분석</div>
           <div class="dash-card-desc">2026년 1~4월 월별 접안척수·TEU·척당물량. 89개 항로, 운항선사 포함.</div>
           <div class="dash-card-meta"><span class="tag-sm">기항실적</span><span class="tag-sm">월별분석</span><span class="status live">최신</span><span class="dash-date">2026.05</span></div>
         </div>
-        <div class="dash-card g" onclick="go('port',null)">
+        <div class="dash-card g" onclick="openDash('busan_port_dashboard.html')">
           <div class="dash-card-icon">🏗️</div>
           <div class="dash-card-title">부산항 컨테이너 물동량 현황</div>
           <div class="dash-card-desc">10개 터미널 · Top 30 선사 · 3개년 추이. 신항/북항 분류 포함.</div>
           <div class="dash-card-meta"><span class="tag-sm g">물동량</span><span class="tag-sm g">선사순위</span><span class="status live">최신</span><span class="dash-date">2025 YTD</span></div>
         </div>
-        <div class="dash-card y" onclick="go('fleet',null)">
+        <div class="dash-card y" onclick="openDash('busan_port_dashboard.html')">
           <div class="dash-card-icon">🚢</div>
           <div class="dash-card-title">터미널별 선대현황</div>
           <div class="dash-card-desc">11개 터미널 전 서비스. NSL·DYS 포함 공동운항 선대.</div>
@@ -261,10 +261,10 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
         </div>
         <div class="preview-foot">
           <div><div class="preview-foot-name">BPT_기항실적_분석_2026_1-4월.html</div><div class="preview-foot-meta">89개 항로 &nbsp;|&nbsp; 4개월 &nbsp;|&nbsp; 전년 대비 준비중</div></div>
-          <a class="btn" href="BPT_기항실적_분석_2026_1-4월.html" target="_blank">
+          <button class="btn" onclick="openDash('BPT_기항실적_분析_2026_1-4월.html')" style="cursor:pointer;">
             <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg>
             대시보드 열기
-          </a>
+          </button>
         </div>
       </div>
       <div class="sec-hd">포함 기능</div>
@@ -296,10 +296,10 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
         </div>
         <div class="preview-foot">
           <div><div class="preview-foot-name">busan_port_dashboard.html</div><div class="preview-foot-meta">10개 터미널 &nbsp;|&nbsp; 선사 70+ &nbsp;|&nbsp; 2023~2025 YTD &nbsp;|&nbsp; 신항/북항 분류</div></div>
-          <a class="btn g" href="busan_port_dashboard.html" target="_blank">
+          <button class="btn g" onclick="openDash('busan_port_dashboard.html')">
             <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg>
             대시보드 열기
-          </a>
+          </button>
         </div>
       </div>
       <div class="sec-hd">포함 기능</div>
@@ -331,10 +331,10 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-seri
         </div>
         <div class="preview-foot">
           <div><div class="preview-foot-name">busan_port_dashboard.html → 🚢 터미널별 선대현황 탭</div><div class="preview-foot-meta">PNC·PNIT·HJNC·HPNT·BNCT·BCT·DGT·BPT신선대·BPT감만·HKT</div></div>
-          <a class="btn y" href="busan_port_dashboard.html" target="_blank">
+          <button class="btn y" onclick="openDash('busan_port_dashboard.html')">
             <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/><path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/></svg>
             선대현황 열기
-          </a>
+          </button>
         </div>
       </div>
     </div>
@@ -438,6 +438,11 @@ document.getElementById('top-date').textContent=
   `${_d.getFullYear()}.${String(_d.getMonth()+1).padStart(2,'0')}.${String(_d.getDate()).padStart(2,'0')} 기준`;
 
 // 페이지 전환
+// 대시보드 바로 열기 (같은 탭)
+function openDash(filename) {
+  window.location.href = filename;
+}
+
 function go(id, el) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
